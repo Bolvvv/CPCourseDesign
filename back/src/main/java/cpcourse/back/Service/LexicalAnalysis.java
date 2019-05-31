@@ -1,6 +1,8 @@
 package cpcourse.back.Service;
 
+import java.util.List;
+
 //词法分析
 public interface LexicalAnalysis {
-    String lexicalAnalysis(String s);
+    List<String> lexicalAnalysis(String s);
 }

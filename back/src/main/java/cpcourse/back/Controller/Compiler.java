@@ -1,6 +1,8 @@
 package cpcourse.back.Controller;
 
 import com.alibaba.fastjson.JSON;
+import cpcourse.back.Service.FirstAndFollow;
+import cpcourse.back.Service.GrammaticalAnalysis;
 import cpcourse.back.Service.LexicalAnalysis;
 import cpcourse.back.Util.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,23 @@ import java.util.Map;
 public class Compiler {
     @Autowired
     LexicalAnalysis lexicalAnalysis;
+    @Autowired
+    FirstAndFollow firstAndFollow;
+    @Autowired
+    GrammaticalAnalysis grammaticalAnalysis;
 
     @RequestMapping("/LexicalAnalysis")
-    ResponseEntity lexicalAnalysis(@RequestBody String json){
+    String lexicalAnalysis(@RequestBody String json){
         Map maps = (Map) JSON.parse(json);
         String code = maps.get("code").toString();
-        lexicalAnalysis.lexicalAnalysis(code);
+        grammaticalAnalysis.recursion(lexicalAnalysis.lexicalAnalysis(code));
         return null;
+    }
+
+    @RequestMapping("/GetFirstAndFollow")
+    String getFirstAndFollow(@RequestBody String json){
+        Map maps = (Map) JSON.parse(json);
+        String code = maps.get("code").toString();
+        return firstAndFollow.getFirstAndFollow(code);
     }
 }

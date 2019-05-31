@@ -11,6 +11,12 @@ public class BackApplicationTests {
 
     @Test
     public void contextLoads() {
+        Integer test1 = 0;
+        test(test1);
+        System.out.println(test1);
+    }
+    private void test(Integer a){
+        a = a+1;
     }
 
 }
