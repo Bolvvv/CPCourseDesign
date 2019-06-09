@@ -4,15 +4,21 @@ package cpcourse.back.Core;
 public class RecursionCore {
     private int[] tokens;
     private int pointer;
-    private boolean flag;//语法判断是否正确
+    public int errorPointer;//错误位置
+    public boolean errorFlag;//错误标识
     public RecursionCore(int[] tokens){
         this.tokens = tokens;
         this.pointer = -1;
-        this.flag = true;
+        this.errorPointer = -1;
+        this.errorFlag = false;
     }
     private void nextPointerAndCheck() throws Exception{
         pointer++;
         if(pointer == tokens.length) throw new Exception("程序执行到尽头，发生错误");
+    }
+    private void setError(int pointer){
+        this.errorFlag = true;
+        this.errorPointer = pointer;
     }
     public boolean program1()throws Exception{
         System.out.println("执行1");
@@ -35,7 +41,11 @@ public class RecursionCore {
         if(varDeclaration4()) return true;
         else {
             pointer = p;//恢复指针
-            return funDeclaration6();
+            if(funDeclaration6()){
+                errorFlag = false;
+                return true;
+            }
+            else return false;
         }
     }
     private boolean varDeclaration4()throws Exception{
@@ -56,27 +66,32 @@ public class RecursionCore {
                                 nextPointerAndCheck();
                                 if(tokens[pointer] == 17) return true;
                                 else {
+                                    setError(pointer);
                                     pointer = p;
                                     return false;
                                 }
                             }
                             else {
+                                setError(pointer);
                                 pointer = p;
                                 return false;
                             }
                         }
                         else {
+                            setError(pointer);
                             pointer = p;
                             return false;
                         }
                     }
                 }
                 else {
+                    setError(pointer);
                     pointer = p;
                     return false;
                 }
             }
             else {
+                setError(pointer);
                 pointer = p;
                 return false;
             }
@@ -93,6 +108,7 @@ public class RecursionCore {
         nextPointerAndCheck();
         if(tokens[pointer] == 2||tokens[pointer] == 4) return true;
         else {
+            setError(pointer);
             pointer = p;
             return false;
         }
@@ -110,6 +126,7 @@ public class RecursionCore {
                         nextPointerAndCheck();
                         if(tokens[pointer] == 20) return true;
                         else {
+                            setError(pointer);
                             pointer = p;
                             return false;
                         }
@@ -120,18 +137,24 @@ public class RecursionCore {
                     }
                 }
                 else {
+                    setError(pointer);
                     pointer = p;
                     return false;
                 }
             }
             else {
+                setError(pointer);
                 pointer = p;
                 return false;
             }
         }
         else {
             pointer = p;
-            return compoundStmt10();
+            if(compoundStmt10()){
+                errorFlag = false;
+                return true;
+            }
+            else return false;
         }
     }
     private boolean params7()throws Exception{
@@ -142,8 +165,12 @@ public class RecursionCore {
         else {
             pointer = p;
             nextPointerAndCheck();
-            if(tokens[pointer] == 4) return true;
+            if(tokens[pointer] == 4) {
+                errorFlag = false;
+                return true;
+            }
             else{
+                setError(pointer);
                 pointer = p;
                 return false;
             }
@@ -185,12 +212,14 @@ public class RecursionCore {
                     nextPointerAndCheck();
                     if(tokens[pointer] == 24) return true;
                     else {
+                        setError(pointer);
                         pointer = p;
                         return false;
                     }
                 }
             }
             else {
+                setError(pointer);
                 pointer = p;
                 return false;
             }
@@ -211,6 +240,7 @@ public class RecursionCore {
                     nextPointerAndCheck();
                     if(tokens[pointer] == 22) return true;
                     else {
+                        setError(pointer);
                         pointer = p;
                         return false;
                     }
@@ -226,6 +256,7 @@ public class RecursionCore {
             }
         }
         else {
+            setError(pointer);
             p = pointer;
             return false;
         }
@@ -275,16 +306,29 @@ public class RecursionCore {
         if(expressionStmt14()) return true;
         else {
             pointer = p;
-            if(compoundStmt10()) return true;
+            if(compoundStmt10()) {
+                errorFlag = false;
+                return true;
+            }
             else {
                 pointer = p;
-                if(selectionStmt15()) return true;
+                if(selectionStmt15()) {
+                    errorFlag = false;
+                    return true;
+                }
                 else {
                     pointer = p;
-                    if(iterationStmt16()) return true;
+                    if(iterationStmt16()) {
+                        errorFlag = false;
+                        return true;
+                    }
                     else {
                         pointer = p;
-                        return returnStmt17();
+                        if(returnStmt17()){
+                            errorFlag = false;
+                            return true;
+                        }
+                        else return false;
                     }
                 }
             }
@@ -298,6 +342,7 @@ public class RecursionCore {
             nextPointerAndCheck();
             if(tokens[pointer] == 17) return true;
             else {
+                setError(pointer);
                 pointer = p;
                 return false;
             }
@@ -305,8 +350,12 @@ public class RecursionCore {
         else {
             pointer = p;
             nextPointerAndCheck();
-            if(tokens[pointer] == 17) return true;
+            if(tokens[pointer] == 17) {
+                errorFlag = false;
+                return true;
+            }
             else {
+                setError(pointer);
                 pointer = p;
                 return false;
             }
@@ -343,6 +392,7 @@ public class RecursionCore {
                         }
                     }
                     else {
+                        setError(pointer);
                         pointer = p;
                         return false;
                     }
@@ -353,11 +403,13 @@ public class RecursionCore {
                 }
             }
             else {
+                setError(pointer);
                 pointer = p;
                 return false;
             }
         }
         else {
+            setError(pointer);
             pointer = p;
             return false;
         }
@@ -380,6 +432,7 @@ public class RecursionCore {
                         }
                     }
                     else {
+                        setError(pointer);
                         pointer = p;
                         return false;
                     }
@@ -390,11 +443,13 @@ public class RecursionCore {
                 }
             }
             else {
+                setError(pointer);
                 pointer = p;
                 return false;
             }
         }
         else {
+            setError(pointer);
             pointer = p;
             return false;
         }
@@ -413,6 +468,7 @@ public class RecursionCore {
                     nextPointerAndCheck();
                     if(tokens[pointer] == 17) return true;
                     else {
+                        setError(pointer);
                         pointer = p;
                         return false;
                     }
@@ -424,6 +480,7 @@ public class RecursionCore {
             }
         }
         else {
+            setError(pointer);
             pointer = p;
             return false;
         }
@@ -447,6 +504,7 @@ public class RecursionCore {
                 }
             }
             else {
+                setError(pointer);
                 pointer--;
                 return true;
             }
@@ -498,7 +556,10 @@ public class RecursionCore {
                 return true;
             }
             else {
-                if(additiveExpression22()) return true;
+                if(additiveExpression22()) {
+                    errorFlag = false;
+                    return true;
+                }
                 else {
                     pointer = p1;
                     return false;
@@ -517,6 +578,7 @@ public class RecursionCore {
         nextPointerAndCheck();
         if(tokens[pointer] <= 15 && tokens[pointer] >= 10) return true;
         else {
+            setError(pointer);
             pointer = p;
             return false;
         }
@@ -546,6 +608,7 @@ public class RecursionCore {
         nextPointerAndCheck();
         if(tokens[pointer] == 6 || tokens[pointer] == 7) return true;
         else {
+            setError(pointer);
             pointer = p;
             return false;
         }
@@ -575,6 +638,7 @@ public class RecursionCore {
         nextPointerAndCheck();
         if(tokens[pointer] == 8 || tokens[pointer] == 9) return true;
         else {
+            setError(pointer);
             pointer = p;
             return false;
         }
@@ -592,8 +656,12 @@ public class RecursionCore {
             if(tokens[pointer] == 19){
                 if(expresion18()){
                     nextPointerAndCheck();
-                    if(tokens[pointer] == 20) return true;
+                    if(tokens[pointer] == 20) {
+                        errorFlag = false;
+                        return true;
+                    }
                     else {
+                        setError(pointer);
                         pointer = p;
                         return false;
                     }
@@ -609,8 +677,12 @@ public class RecursionCore {
                     if(tokens[pointer] == 19){
                         if(args28()){
                             nextPointerAndCheck();
-                            if(tokens[pointer] == 20) return true;
+                            if(tokens[pointer] == 20) {
+                                errorFlag = false;
+                                return true;
+                            }
                             else {
+                                setError(pointer);
                                 pointer = p;
                                 return false;
                             }
@@ -623,23 +695,30 @@ public class RecursionCore {
                     else if(tokens[pointer] == 23){
                         if(expresion18()){
                             nextPointerAndCheck();
-                            if(tokens[pointer] == 24) return true;
+                            if(tokens[pointer] == 24) {
+                                errorFlag = false;
+                                return true;
+                            }
                             else {
+                                setError(pointer);
                                 pointer = p;
                                 return false;
                             }
                         }
                         else {
+                            setError(pointer);
                             pointer = p;
                             return false;
                         }
                     }
                     else {
+                        errorFlag = false;
                         pointer--;//恢复
                         return true;
                     }
                 }
                 else {
+                    setError(pointer);
                     pointer = p;
                     return false;
                 }
@@ -686,10 +765,12 @@ public class RecursionCore {
             pointer = p;
             nextPointerAndCheck();
             if(tokens[pointer] == 20) {
+                errorFlag = false;
                 pointer--;//恢复
                 return true;
             }
             else {
+                setError(pointer);
                 pointer--;
                 return false;
             }
@@ -704,6 +785,7 @@ public class RecursionCore {
                 int p2 = pointer;
                 nextPointerAndCheck();
                 if(tokens[pointer] != 18){
+                    errorFlag = false;
                     pointer = p2;
                     return true;
                 }

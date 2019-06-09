@@ -18,7 +18,11 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
         RecursionCore recursionCore = new RecursionCore(tokens);
         try{
             if(recursionCore.program1()) System.out.println("语法无错误");
-            else System.out.println("语法错误");
+            else {
+                System.out.println("语法错误");
+                System.out.println("语法错误位置为"+recursionCore.errorPointer+"附近");
+
+            }
         }catch (Exception e){
             System.out.println("语法错误，指针已到末尾");
         }
