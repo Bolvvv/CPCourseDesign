@@ -26,8 +26,7 @@ public class Compiler {
     String lexicalAnalysis(@RequestBody String json){
         Map maps = (Map) JSON.parse(json);
         String code = maps.get("code").toString();
-        grammaticalAnalysis.recursion(lexicalAnalysis.lexicalAnalysis(code));
-        return null;
+        return grammaticalAnalysis.recursion(lexicalAnalysis.lexicalAnalysis(code));
     }
 
     @RequestMapping("/GetFirstAndFollow")

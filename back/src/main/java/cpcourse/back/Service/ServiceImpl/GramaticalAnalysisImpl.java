@@ -1,6 +1,7 @@
 package cpcourse.back.Service.ServiceImpl;
 
 import cpcourse.back.Core.RecursionCore;
+import cpcourse.back.Core.TreeNode;
 import cpcourse.back.Service.GrammaticalAnalysis;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,13 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
         //进行语法分析
         RecursionCore recursionCore = new RecursionCore(cleanTokens);
         try{
-            if(recursionCore.program1()) System.out.println("语法无错误");
+            TreeNode treeNode = new TreeNode("begin");
+            if(recursionCore.program1(treeNode)) {
+                StringBuilder stringBuilder = new StringBuilder();
+                recursionTree(treeNode, stringBuilder, 1);
+                System.out.println("语法无错误");
+                return stringBuilder.toString();
+            }
             else {
                 System.out.println("语法错误");
                 System.out.println("语法错误位置为"+recursionCore.errorPointer+"附近");
@@ -66,6 +73,19 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
         for(int i = 0; i < source.length; i++){
             if(i>=begin&&i<=end) {
                 source[i] = -1;
+            }
+        }
+    }
+
+    private void recursionTree(TreeNode head, StringBuilder result, int level){
+        for(int i = 0; i < level; i++){
+            result.append("\t");
+        }
+        result.append(head.getName());
+        if(head.getSonNode() != null){
+            for(TreeNode t : head.getSonNode()){
+                result.append("\r");
+                recursionTree(t, result, level+1);
             }
         }
     }
