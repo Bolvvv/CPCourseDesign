@@ -111,6 +111,7 @@ public class RecursionCore {
                         return true;
                     }
                     else {
+                        addSonTerminatorNode(node, 23);
                         nextPointerAndCheck();
                         if(tokens[pointer] == 28){
                             addSonTerminatorNode(node, 28);
@@ -339,6 +340,13 @@ public class RecursionCore {
         if(tokens[pointer] == 21){
             addSonTerminatorNode(node, 21);
             if(localDeclarations11(node)){
+                //TODO：有点问题
+                //{x[i] = input;i = i + 1;}
+                //*compound-stmt
+                //	{
+                //		*local-declarations
+                //	    *statement-list
+                //      ...
                 if(statementList12(node)){
                     nextPointerAndCheck();
                     if(tokens[pointer] == 22) {
@@ -379,9 +387,12 @@ public class RecursionCore {
         int p1 = pointer;
         while (true){
             if(!varDeclaration4(node)){
+                node.setSonNode(node.getSonNode().subList(0, node.getSonNode().size()-1));//这是去除额外的varDeclaration子节点
+                int size = node.getSonNode().size();
                 int p2 = pointer;//根据第10条可得当为empty时即转制下一条进行验证，并且恢复pointer
                 if(statementList12(node)){
                     //TODO:可能会出异常
+                    node.setSonNode(node.getSonNode().subList(0, size));
                     pointer = p2;
                     return true;
                 }
@@ -401,6 +412,7 @@ public class RecursionCore {
         int p = pointer;
         while (true){
             if(!statement13(node)){
+                node.setSonNode(node.getSonNode().subList(0, node.getSonNode().size()-1));//这是去除额外的varDeclaration子节点
                 nextPointerAndCheck();//根据第10条可得当为empty时下一个符号为}，对应22
                 if(tokens[pointer] == 22){
                     pointer--;
@@ -720,6 +732,7 @@ public class RecursionCore {
             int p2 = pointer;
             if(!relop21(node)){
                 //TODO:可能存在异常
+                node.setSonNode(node.getSonNode().subList(0, node.getSonNode().size()-1));//这是去除额外的varDeclaration子节点
                 pointer = p2;//恢复
                 return true;
             }
@@ -761,13 +774,14 @@ public class RecursionCore {
     private boolean additiveExpression22(TreeNode fatherNode) throws Exception{
         //additive-expression → additive-expression addop term|term
         System.out.println("执行22");
-        TreeNode node = initFatherSonNode(fatherNode, "*relop");
+        TreeNode node = initFatherSonNode(fatherNode, "*additive-expression");
         int p1 = pointer;
         while (true){
             if(term24(node)){
                 int p2 = pointer;
                 if(!addop23(node)){
-                    //TODO:可能有异常
+                  //TODO:可能有异常
+                  node.setSonNode(node.getSonNode().subList(0, node.getSonNode().size()-1));//这是去除额外的varDeclaration子节点
                   pointer = p2;
                   return true;
                 }
@@ -806,6 +820,7 @@ public class RecursionCore {
                 int p2 = pointer;
                 if(!mulop25(node)){
                     //TODO:可能有异常
+                    node.setSonNode(node.getSonNode().subList(0, node.getSonNode().size()-1));//这是去除额外的varDeclaration子节点
                     pointer = p2;
                     return true;
                 }
@@ -921,7 +936,6 @@ public class RecursionCore {
                         }
                     }
                     else {
-                        node.setSonNode(null);
                         errorFlag = false;
                         pointer--;//恢复
                         return true;

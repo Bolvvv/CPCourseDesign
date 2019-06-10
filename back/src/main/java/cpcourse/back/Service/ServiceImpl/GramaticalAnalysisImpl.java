@@ -29,7 +29,7 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
         }
         if(!st.empty()) {
             System.out.println("注释错误");
-            return null;
+            return "1";
         }
         else {
             int count = 0;
@@ -49,7 +49,7 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
         //进行语法分析
         RecursionCore recursionCore = new RecursionCore(cleanTokens);
         try{
-            TreeNode treeNode = new TreeNode("begin");
+            TreeNode treeNode = new TreeNode("*begin");
             if(recursionCore.program1(treeNode)) {
                 StringBuilder stringBuilder = new StringBuilder();
                 recursionTree(treeNode, stringBuilder, 1);
@@ -59,13 +59,14 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
             else {
                 System.out.println("语法错误");
                 System.out.println("语法错误位置为"+recursionCore.errorPointer+"附近");
+                return "2"+recursionCore.errorPointer;
 
             }
         }catch (Exception e){
             System.out.println("语法错误");
             System.out.println("语法错误位置为"+recursionCore.errorPointer+"附近");
+            return "2"+recursionCore.errorPointer;
         }
-        return null;
     }
 
     //去除注释间的内容，将原有的内容设置为-1
@@ -78,10 +79,15 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
     }
 
     private void recursionTree(TreeNode head, StringBuilder result, int level){
+        String[] key = {"else", "if", "int", "return", "void", "while", "+", "-", "*", "/", "<", "<=", ">", ">=", "==", "!=", "=", ";", ",", "(", ")", "{", "}", "[", "]", "/*", "*/", "ID", "NUM"};
         for(int i = 0; i < level; i++){
             result.append("\t");
         }
-        result.append(head.getName());
+        if(head.getName().charAt(0) == '*') result.append(head.getName());
+        else {
+            int locate = Integer.valueOf(head.getName());
+            result.append(key[locate]);
+        }
         if(head.getSonNode() != null){
             for(TreeNode t : head.getSonNode()){
                 result.append("\r");
