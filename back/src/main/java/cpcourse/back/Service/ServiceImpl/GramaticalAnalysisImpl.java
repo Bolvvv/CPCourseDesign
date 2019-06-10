@@ -81,7 +81,7 @@ public class GramaticalAnalysisImpl implements GrammaticalAnalysis {
     private void recursionTree(TreeNode head, StringBuilder result, int level){
         String[] key = {"else", "if", "int", "return", "void", "while", "+", "-", "*", "/", "<", "<=", ">", ">=", "==", "!=", "=", ";", ",", "(", ")", "{", "}", "[", "]", "/*", "*/", "ID", "NUM"};
         for(int i = 0; i < level; i++){
-            result.append("\t");
+            result.append("  ");
         }
         if(head.getName().charAt(0) == '*') result.append(head.getName());
         else {

@@ -9,7 +9,6 @@ public class RecursionCore {
     private int pointer;
     public int errorPointer;//错误位置
     public boolean errorFlag;//错误标识
-    public TreeNode head;//语法树生成
     public RecursionCore(int[] tokens){
         this.tokens = tokens;
         this.pointer = -1;
@@ -668,11 +667,11 @@ public class RecursionCore {
         System.out.println("执行18");
         TreeNode node = initFatherSonNode(fatherNode, "*expression");
         int p = pointer;
-        if(simpleExpression20(node)){
+        if(var19(node)){
             nextPointerAndCheck();
             if(tokens[pointer] == 16){
                 addSonTerminatorNode(node, 16);
-                if(simpleExpression20(node)) return true;
+                if(expresion18(node)) return true;
                 else {
                     node.setSonNode(null);
                     pointer = p;
@@ -680,49 +679,98 @@ public class RecursionCore {
                 }
             }
             else {
-                node.setSonNode(null);
-                setError(pointer);
-                pointer--;
-                return true;
+                node.setSonNode(null);//这里需要将已经添加至node子节点的var去掉
+                pointer = p;
+                if(simpleExpression20(node)){
+                    return true;
+                }
+                else {
+                    node.setSonNode(null);
+                    pointer = p;
+                    return false;
+                }
+
             }
         }
         else {
-            node.setSonNode(null);
             pointer = p;
-            return false;
+            if(simpleExpression20(node)) {
+                errorFlag = false;
+                return true;
+            }
+            else {
+                node.setSonNode(null);
+                pointer = p;
+                return false;
+            }
         }
-    }
-//    private boolean var19()throws Exception{
-//        //var → ID|ID[expression]
-//        System.out.println("执行19");
 //        int p = pointer;
-//        nextPointerAndCheck();
-//        if(tokens[pointer] == 27){
+//        if(simpleExpression20(node)){
 //            nextPointerAndCheck();
-//            if(tokens[pointer] != 23) {
-//                pointer--;//恢复
-//                return true;
-//            }
-//            else {
-//                if(expresion18()){
-//                    nextPointerAndCheck();
-//                    if(tokens[pointer] == 24) return true;
-//                    else {
-//                        pointer = p;
-//                        return false;
-//                    }
-//                }
+//            if(tokens[pointer] == 16){
+//                addSonTerminatorNode(node, 16);
+//                if(simpleExpression20(node)) return true;
 //                else {
+//                    node.setSonNode(null);
 //                    pointer = p;
 //                    return false;
 //                }
 //            }
+//            else {
+//                node.setSonNode(null);
+//                setError(pointer);
+//                pointer--;
+//                return true;
+//            }
 //        }
 //        else {
+//            node.setSonNode(null);
 //            pointer = p;
 //            return false;
 //        }
-//    }
+    }
+    private boolean var19(TreeNode fatherNode)throws Exception{
+        //var → ID|ID[expression]
+        System.out.println("执行19");
+        TreeNode node = initFatherSonNode(fatherNode, "*var");
+        int p = pointer;
+        nextPointerAndCheck();
+        if(tokens[pointer] == 27){
+            addSonTerminatorNode(node, 27);
+            nextPointerAndCheck();
+            if(tokens[pointer] != 23) {
+                pointer--;//恢复
+                return true;
+            }
+            else {
+                addSonTerminatorNode(node, 23);
+                if(expresion18(node)){
+                    nextPointerAndCheck();
+                    if(tokens[pointer] == 24) {
+                        addSonTerminatorNode(node, 24);
+                        return true;
+                    }
+                    else {
+                        node.setSonNode(null);
+                        setError(pointer);
+                        pointer = p;
+                        return false;
+                    }
+                }
+                else {
+                    node.setSonNode(null);
+                    pointer = p;
+                    return false;
+                }
+            }
+        }
+        else {
+            node.setSonNode(null);
+            setError(pointer);
+            pointer = p;
+            return false;
+        }
+    }
     private boolean simpleExpression20(TreeNode fatherNode) throws Exception{
         //simple-expression → additive-expression relop additive-expression|additive-expression
         System.out.println("执行20");
